@@ -1,54 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login Toko Baju</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 300px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: black;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-<div class="box">
-    <h2>Login</h2>
+@section('title', 'Login - Kelompok 8')
 
-    <form method="POST" action="{{ url('/login') }}">
+@section('content')
+<div class="card" style="max-width: 400px; margin:auto;">
+    <h2 class="text-center">Login</h2>
+
+    <form method="POST" action="/login">
         @csrf
 
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
 
-        <button type="submit">Login</button>
+        <button type="submit" class="btn btn-dark" style="width:100%;">Login</button>
     </form>
 
-    <p>Belum punya akun? <a href="{{ url('/register') }}">Register</a></p>
+    <p class="text-center">
+        Belum punya akun? <a href="/register">Register</a>
+    </p>
 </div>
-
-</body>
-</html>
+@endsection
