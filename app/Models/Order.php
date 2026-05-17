@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\OrderItem;
 
 class Order extends Model
 {
@@ -11,6 +13,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'items',
         'total_harga',
         'alamat_pengiriman',
         'nomor_telepon',

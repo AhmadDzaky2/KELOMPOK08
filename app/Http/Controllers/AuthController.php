@@ -15,21 +15,21 @@ class AuthController extends Controller
     }
 
     // proses register
-   public function register(Request $request)
-{
-    $data = $request->validate([
-        'username' => 'required|unique:users',
-        'password' => 'required|min:4|confirmed',
-    ]);
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'username' => 'required|unique:users',
+            'password' => 'required|min:4|confirmed',
+        ]);
 
-    User::create([
-        'username' => $data['username'],
-        'password' => bcrypt($data['password']),
-        'role' => 'customer', 
-    ]);
+        User::create([
+            'username' => $data['username'],
+            'password' => bcrypt($data['password']),
+            'role' => 'customer',
+        ]);
 
-    return redirect('/login');
-}
+        return redirect('/login');
+    }
 
     // tampil login
     public function showLogin()
@@ -47,16 +47,18 @@ class AuthController extends Controller
 
         $login = Auth::attempt([
             'username' => $request->username,
-            'password' => $request->password
+            'password' => $request->password,
         ]);
 
         if ($login) {
             $request->session()->regenerate();
 
+            // Jika admin, masuk ke halaman admin products
             if (Auth::user()->role == 'admin') {
-                return redirect('/admin/dashboard');
+                return redirect('/admin/products');
             }
 
+            // Jika customer, masuk ke halaman utama
             return redirect('/');
         }
 

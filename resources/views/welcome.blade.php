@@ -1,20 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Kelompok 8')
+@section('title', 'Selamat Datang')
 
 @section('content')
-<div class="card text-center" style="max-width: 700px; margin: auto; padding: 60px 40px;">
-    <h1 style="font-size: 48px; margin-bottom: 15px;">🛍 Kelompok 8</h1>
-    <p style="font-size: 20px; color: #666; margin-bottom: 30px;">
-        Selamat datang di aplikasi toko online kami.
+
+<div class="text-center py-5" style="min-height: 80vh; display:flex; flex-direction:column; justify-content:center;">
+
+    <h1 style="font-size: 48px; font-weight: 700; margin-bottom: 20px;">
+        Belanja Mudah, Cepat, dan Aman 🛒
+    </h1>
+
+    <p style="font-size: 18px; color: #6b7280; max-width: 600px; margin: 0 auto 30px;">
+        Temukan produk terbaik dengan harga terjangkau dan kualitas terpercaya.
     </p>
-
-    <a href="/login" class="btn btn-dark" style="margin-right: 10px;">
-        Login
-    </a>
-
-    <a href="/register" class="btn btn-green">
-        Register
-    </a>
 </div>
+
 @endsection

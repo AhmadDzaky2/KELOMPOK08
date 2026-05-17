@@ -13,12 +13,12 @@ return new class extends Migration
 {
     Schema::create('users', function (Illuminate\Database\Schema\Blueprint $table) {
         $table->id();
-        $table->string('name')->nullable(); // Boleh dikosongkan
-        $table->string('username')->unique(); // Tambahkan ini
-        $table->string('email')->nullable()->unique(); // Ubah jadi nullable jika tidak wajib
+        $table->string('name')->nullable(); 
+        $table->string('username')->unique();
+        $table->string('email')->nullable()->unique(); 
         $table->timestamp('email_verified_at')->nullable();
         $table->string('password');
-        $table->enum('role', ['admin', 'customer'])->default('customer'); // Tambahkan role
+        $table->enum('role', ['admin', 'customer'])->default('customer'); 
         $table->rememberToken();
         $table->timestamps();
     });

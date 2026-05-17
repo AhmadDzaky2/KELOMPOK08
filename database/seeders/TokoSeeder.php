@@ -11,9 +11,9 @@ class TokoSeeder extends Seeder
 {
     public function run(): void
     {
-       // Contoh di TokoSeeder.php
+    
 User::updateOrCreate(
-    ['username' => 'admin_toko'], // Cek apakah username ini ada
+    ['username' => 'admin_toko'], 
     [
         'password' => Hash::make('admin123'),
         'role' => 'admin'
@@ -28,7 +28,6 @@ User::updateOrCreate(
     ]
 );
 
-        // 2. Isi Produk
         Product::create([
             'nama_produk' => 'Kaos Polos Premium Black',
             'deskripsi' => 'Bahan katun combed 30s warna hitam pekat.',

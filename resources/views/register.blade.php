@@ -1,25 +1,66 @@
 @extends('layouts.app')
 
-@section('title', 'Register - Kelompok 8')
+@section('title', 'Register')
 
 @section('content')
-<div class="card" style="max-width: 400px; margin: auto;">
-    <h2 class="text-center">Register</h2>
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card page-card">
+            <div class="card-body p-5">
 
-    <form method="POST" action="/register">
-        @csrf
+                <div class="text-center mb-4">
+                    <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-plus-fill text-white fs-1"></i>
+                    </div>
+                    <h2 class="fw-bold">Create Account</h2>
+                    <p class="text-muted">Daftar akun baru sekarang</p>
+                </div>
 
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" required>
+                <form method="POST" action="/register">
+                    @csrf
 
-        <button type="submit" class="btn btn-green" style="width: 100%; margin-top: 10px;">
-            Register
-        </button>
-    </form>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control form-control-lg" required>
+                    </div>
 
-    <p class="text-center" style="margin-top: 15px;">
-        Sudah punya akun? <a href="/login">Login</a>
-    </p>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+
+                        <div class="input-group">
+                            <input type="password" id="reg_password" name="password" class="form-control form-control-lg" required>
+
+                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('reg_password')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Konfirmasi Password</label>
+
+                        <div class="input-group">
+                            <input type="password" id="reg_password_confirmation" name="password_confirmation" class="form-control form-control-lg" required>
+
+                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('reg_password_confirmation')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-semibold">
+                        Register
+                    </button>
+                </form>
+
+                <p class="text-center mt-4 mb-0">
+                    Sudah punya akun?
+                    <a href="/login" class="text-primary fw-semibold">Login</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

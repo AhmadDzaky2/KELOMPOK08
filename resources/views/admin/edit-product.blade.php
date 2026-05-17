@@ -1,77 +1,105 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Kelompok 8 - Edit Produk</title>
+@extends('layouts.app')
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            padding-top: 50px;
-        }
+@section('title', 'Edit Produk - Kelompok 8')
 
-        .box {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            width: 400px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+@section('content')
+<div class="container py-4">
+    <div class="card shadow border-0 mx-auto" style="max-width: 650px; border-radius: 20px;">
+        <div class="card-header text-white"
+             style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px 20px 0 0;">
+            <h3 class="mb-0 fw-bold">✏️ Edit Produk</h3>
+            <small>Perbarui data produk</small>
+        </div>
 
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
+        <div class="card-body p-4">
+            <form method="POST"
+                  action="{{ route('admin.products.update', $product->id) }}"
+                  enctype="multipart/form-data">
+                @csrf
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background: black;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nama Produk</label>
+                    <input
+                        type="text"
+                        name="nama_produk"
+                        class="form-control"
+                        value="{{ $product->nama_produk }}"
+                        required
+                    >
+                </div>
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 10px;
-            text-decoration: none;
-            color: black;
-        }
-    </style>
-</head>
-<body>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Deskripsi</label>
+                    <textarea
+                        name="deskripsi"
+                        class="form-control"
+                        rows="4"
+                        required
+                    >{{ $product->deskripsi }}</textarea>
+                </div>
 
-<div class="box">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Harga</label>
+                        <input
+                            type="number"
+                            name="harga"
+                            class="form-control"
+                            value="{{ $product->harga }}"
+                            required
+                        >
+                    </div>
 
-    <h2>Edit Produk</h2>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Stok</label>
+                        <input
+                            type="number"
+                            name="stok"
+                            class="form-control"
+                            value="{{ $product->stok }}"
+                            required
+                        >
+                    </div>
+                </div>
 
-    <form method="POST" action="/admin/products/{{ $product->id }}/update">
-        @csrf
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Foto Produk</label>
 
-        <label>Nama Produk</label>
-        <input name="nama_produk" value="{{ $product->nama_produk }}">
+                    @if($product->foto)
+                        <div class="mb-3">
+                            <p class="text-muted mb-2">Foto saat ini:</p>
+                            <img
+                                src="{{ asset('storage/' . $product->foto) }}"
+                                alt="{{ $product->nama_produk }}"
+                                style="width: 140px; height: 140px; object-fit: cover; border-radius: 12px;"
+                                class="shadow-sm"
+                            >
+                        </div>
+                    @endif
 
-        <label>Deskripsi</label>
-        <textarea name="deskripsi">{{ $product->deskripsi }}</textarea>
+                    <input
+                        type="file"
+                        name="foto"
+                        class="form-control"
+                        accept="image/*"
+                    >
 
-        <label>Harga</label>
-        <input name="harga" type="number" value="{{ $product->harga }}">
+                    <small class="text-muted">
+                        Pilih foto jika ingin menambahkan atau mengganti gambar produk.
+                    </small>
+                </div>
 
-        <label>Stok</label>
-        <input name="stok" type="number" value="{{ $product->stok }}">
+                <div class="d-flex gap-2 mt-4">
+                    <a href="/admin/products" class="btn btn-outline-secondary w-50">
+                        ← Kembali
+                    </a>
 
-        <button type="submit">Update Produk</button>
-    </form>
-
-    <a href="/admin/products">← Kembali</a>
-
+                    <button type="submit" class="btn btn-primary w-50">
+                        💾 Update Produk
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-
-</body>
-</html>
+@endsection

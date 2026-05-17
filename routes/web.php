@@ -1,14 +1,17 @@
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CheckoutController;
+<?php
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Models\Product;
+use App\Models\Order;
 
-/*
-|-------------------------
+/* =========================
 | HOME
-|-------------------------
-*/
+========================= */
 Route::get('/', function () {
 
     if (!Auth::check()) {
@@ -20,22 +23,164 @@ Route::get('/', function () {
     }
 
     $products = Product::all();
-    return view('dashboard', compact('products'));
+    return view('products', compact('products'));
 });
 
 
-/*
-|-------------------------
-| AUTH + CART (CUSTOMER)
-|-------------------------
-*/
-Route::middleware('auth')->group(function () {
+/* =========================
+| AUTH
+========================= */
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
 
-    Route::get('/cart', [CartController::class, 'index']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 
-    // ✅ INI WAJIB ADA (FIX ERROR cart.add not defined)
-    Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])
-        ->name('cart.add');
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');
+})->name('logout');
 
-    Route::post('/checkout', [CheckoutController::class, 'store']);
-});
+
+/* =========================
+| CART
+========================= */
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::post('/cart/add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
+
+/* =========================
+| CHECKOUT
+========================= */
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout');
+
+
+/* =========================
+| CUSTOMER ORDER TRACKING
+========================= */
+Route::get('/pesanan-saya', function () {
+
+    if (!Auth::check()) {
+        return redirect('/login');
+    }
+
+    $orders = Order::with(['items.product'])
+        ->where('user_id', Auth::id())
+        ->latest()
+        ->get();
+
+    return view('orders-user', compact('orders'));
+})->name('orders.user');
+
+
+/* =========================
+| ADMIN ORDERS
+========================= */
+Route::get('/admin/orders', function () {
+
+    $orders = Order::with(['user', 'items.product'])
+        ->orderBy('id', 'asc')
+        ->get();
+
+    return view('admin.orders', compact('orders'));
+})->name('admin.orders');
+
+Route::post('/admin/orders/{id}/update', function ($id) {
+
+    $order = Order::findOrFail($id);
+
+    if ($order->status_order == 'pending') {
+        $order->status_order = 'diproses';
+    } elseif ($order->status_order == 'diproses') {
+        $order->status_order = 'selesai';
+    }
+
+    $order->save();
+
+    return back();
+})->name('admin.orders.update');
+
+
+/* =========================
+| ADMIN PRODUCTS (LIST)
+========================= */
+Route::get('/admin/products', function () {
+    $products = Product::all();
+    return view('admin.products', compact('products'));
+})->name('admin.products');
+
+
+/* =========================
+| ADMIN PRODUCTS CREATE
+========================= */
+Route::get('/admin/products/create', function () {
+    return view('admin.create-product');
+})->name('admin.products.create');
+
+
+/* =========================
+| ADMIN PRODUCTS STORE
+========================= */
+Route::post('/admin/products/store', function (Request $request) {
+
+    Product::create([
+        'nama_produk' => $request->nama_produk,
+        'harga' => $request->harga,
+        'stok' => $request->stok,
+        'deskripsi' => $request->deskripsi,
+    ]);
+
+    return redirect('/admin/products')
+        ->with('success', 'Produk berhasil ditambah');
+})->name('admin.products.store');
+
+
+/* =========================
+| ADMIN PRODUCTS EDIT
+========================= */
+Route::get('/admin/products/{id}/edit', function ($id) {
+
+    $product = Product::findOrFail($id);
+
+    return view('admin.edit-product', compact('product'));
+})->name('admin.products.edit');
+
+
+/* =========================
+| ADMIN PRODUCTS UPDATE
+========================= */
+Route::post('/admin/products/{id}/update', function ($id, Request $request) {
+
+    $product = Product::findOrFail($id);
+
+    $product->update([
+        'nama_produk' => $request->nama_produk,
+        'harga' => $request->harga,
+        'stok' => $request->stok,
+        'deskripsi' => $request->deskripsi,
+    ]);
+
+    return redirect('/admin/products')
+        ->with('success', 'Produk berhasil diupdate');
+})->name('admin.products.update');
+
+
+/* =========================
+| ADMIN PRODUCTS RESTOCK
+========================= */
+Route::post('/admin/products/{id}/restock', function ($id, Request $request) {
+
+    $product = Product::findOrFail($id);
+
+    $tambah = (int) $request->stok_tambah;
+
+    if ($tambah > 0) {
+        $product->stok += $tambah;
+        $product->save();
+    }
+
+    return redirect('/admin/products')
+        ->with('success', 'Stok berhasil ditambah');
+})->name('admin.products.restock');

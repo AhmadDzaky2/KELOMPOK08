@@ -48,4 +48,36 @@ class CartController extends Controller
 
         return back()->with('success', 'Produk berhasil ditambah!');
     }
+
+    public function update(Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            $qty = (int) $request->quantity;
+
+            if ($qty <= 0) {
+                unset($cart[$id]);
+            } else {
+                $cart[$id]['quantity'] = $qty;
+            }
+        }
+
+        session()->put('cart', $cart);
+
+        return back();
+    }
+
+    public function remove($id)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+        }
+
+        session()->put('cart', $cart);
+
+        return back();
+    }
 }

@@ -1,66 +1,88 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tambah Produk - Kelompok 8</title>
+@extends('layouts.app')
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            padding-top: 50px;
-        }
+@section('title', 'Tambah Produk - Kelompok 8')
 
-        .box {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            width: 400px;
-        }
+@section('content')
+<div class="container py-4">
+    <div class="card shadow border-0 mx-auto" style="max-width: 650px; border-radius: 20px;">
+        <div class="card-header text-white"
+             style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px 20px 0 0;">
+            <h3 class="mb-0 fw-bold">📦 Tambah Produk Baru</h3>
+            <small>Lengkapi data produk yang akan dijual</small>
+        </div>
 
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-        }
+        <div class="card-body p-4">
+            <form method="POST" action="/admin/products/store" enctype="multipart/form-data">
+                @csrf
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background: black;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nama Produk</label>
+                    <input
+                        type="text"
+                        name="nama_produk"
+                        class="form-control"
+                        placeholder="Contoh: Hoodie Oversize"
+                        required
+                    >
+                </div>
 
-        a {
-            display: block;
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Deskripsi Produk</label>
+                    <textarea
+                        name="deskripsi"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Masukkan deskripsi produk"
+                        required
+                    ></textarea>
+                </div>
 
-<div class="box">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Harga</label>
+                        <input
+                            type="number"
+                            name="harga"
+                            class="form-control"
+                            placeholder="50000"
+                            required
+                        >
+                    </div>
 
-    <h2>Tambah Produk</h2>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Stok</label>
+                        <input
+                            type="number"
+                            name="stok"
+                            class="form-control"
+                            placeholder="10"
+                            required
+                        >
+                    </div>
 
-    <form method="POST" action="/admin/products/store">
-        @csrf
+                    <div class="mb-3">
+                         <label class="form-label fw-semibold">Foto Produk</label>
+                         <input
+                             type="file"
+                             name="foto"
+                             class="form-control"
+                             accept="image/*"
+                             required
+                         >
+                    </div>
+                </div>
 
-        <input name="nama_produk" placeholder="Nama Produk">
-        <textarea name="deskripsi" placeholder="Deskripsi"></textarea>
-        <input name="harga" type="number" placeholder="Harga">
-        <input name="stok" type="number" placeholder="Stok">
+                <div class="d-flex gap-2 mt-4">
+                    <a href="/admin/products" class="btn btn-outline-secondary w-50">
+                        ← Kembali
+                    </a>
 
-        <button type="submit">Simpan</button>
-    </form>
-
-    <a href="/admin/products">← Kembali</a>
-
+                    <button type="submit" class="btn btn-primary w-50">
+                        💾 Simpan Produk
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-
-</body>
-</html>
+@endsection
