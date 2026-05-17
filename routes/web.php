@@ -87,6 +87,7 @@ Route::get('/admin/orders', function () {
     return view('admin.orders', compact('orders'));
 })->name('admin.orders');
 
+
 Route::post('/admin/orders/{id}/update', function ($id) {
 
     $order = Order::findOrFail($id);
@@ -121,15 +122,22 @@ Route::get('/admin/products/create', function () {
 
 
 /* =========================
-| ADMIN PRODUCTS STORE
+| ADMIN PRODUCTS STORE (FIX FOTO)
 ========================= */
 Route::post('/admin/products/store', function (Request $request) {
+
+    $path = null;
+
+    if ($request->hasFile('foto')) {
+        $path = $request->file('foto')->store('products', 'public');
+    }
 
     Product::create([
         'nama_produk' => $request->nama_produk,
         'harga' => $request->harga,
         'stok' => $request->stok,
         'deskripsi' => $request->deskripsi,
+        'foto' => $path,
     ]);
 
     return redirect('/admin/products')
@@ -149,18 +157,26 @@ Route::get('/admin/products/{id}/edit', function ($id) {
 
 
 /* =========================
-| ADMIN PRODUCTS UPDATE
+| ADMIN PRODUCTS UPDATE (FIX FOTO)
 ========================= */
 Route::post('/admin/products/{id}/update', function ($id, Request $request) {
 
     $product = Product::findOrFail($id);
 
-    $product->update([
+    $data = [
         'nama_produk' => $request->nama_produk,
         'harga' => $request->harga,
         'stok' => $request->stok,
         'deskripsi' => $request->deskripsi,
-    ]);
+    ];
+
+    if ($request->hasFile('foto')) {
+
+        $data['foto'] = $request->file('foto')
+            ->store('products', 'public');
+    }
+
+    $product->update($data);
 
     return redirect('/admin/products')
         ->with('success', 'Produk berhasil diupdate');
