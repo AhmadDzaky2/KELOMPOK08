@@ -1,104 +1,151 @@
-@extends('layouts.app')
-
-@section('title', 'Kelola Produk')
+@extends('admin.contoh')
 
 @section('content')
-<div class="card page-card p-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="mb-1 text-primary">📦 Kelola Produk</h3>
-            <p class="text-muted mb-0">{{ $products->count() }} produk tersedia</p>
+<main class="dashboard-content">
+    <div class="container-fluid px-3 px-lg-4 py-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h3 mb-1">📦 Kelola Produk</h2>
+                <p class="text-muted mb-0">
+                    Manajemen produk dan stok toko
+                </p>
+            </div>
+
+            <a href="{{ route('admin.products.create') }}"
+               class="btn btn-primary">
+                ➕ Tambah Produk
+            </a>
         </div>
 
-        <a href="{{ route('admin.products.create') }}"
-           class="btn btn-primary fw-semibold px-4">
-            ➕ Tambah Produk
-        </a>
-    </div>
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mb-4">
+                {{ session('success') }}
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            {{ session('success') }}
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"></button>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <h5 class="mb-1">Daftar Produk</h5>
+                    <p class="text-muted mb-0">
+                        Total: {{ $products->count() }} produk
+                    </p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>Foto</th>
+                            <th>Nama Produk</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th width="250">Aksi</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                    @forelse($products as $product)
+
+                        <tr>
+
+                            <td>
+                                @if($product->foto)
+                                    <img
+                                        src="{{ asset('storage/' . $product->foto) }}"
+                                        width="70"
+                                        height="70"
+                                        style="object-fit: cover; border-radius: 10px;"
+                                    >
+                                @else
+                                    <span class="text-muted">
+                                        Tidak ada foto
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {{ $product->nama_produk }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                Rp {{ number_format($product->harga, 0, ',', '.') }}
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    {{ $product->stok }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <div class="d-flex gap-2">
+
+                                    <a href="{{ route('admin.products.edit', $product->id) }}"
+                                       class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{{ route('admin.products.restock', $product->id) }}"
+                                          class="d-flex gap-2">
+
+                                        @csrf
+
+                                        <input
+                                            type="number"
+                                            name="stok_tambah"
+                                            min="1"
+                                            class="form-control form-control-sm"
+                                            placeholder="+stok"
+                                            style="width: 90px;"
+                                            required
+                                        >
+
+                                        <button type="submit"
+                                                class="btn btn-success btn-sm">
+                                            ➕
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                Belum ada produk
+                            </td>
+                        </tr>
+
+                    @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
         </div>
-    @endif
 
-    <div class="row g-4">
-        @forelse($products as $product)
-            <div class="col-md-4">
-                <div class="card product-card h-100">
-
-                    <img
-                        src="{{ $product->foto
-                            ? asset('storage/' . $product->foto)
-                            : 'https://via.placeholder.com/400x300?text=No+Image' }}"
-                        class="card-img-top"
-                        alt="{{ $product->nama_produk }}"
-                    >
-
-                    <div class="card-body d-flex flex-column">
-
-                        <h5 class="card-title fw-bold">
-                            {{ $product->nama_produk }}
-                        </h5>
-
-                        <p class="text-muted small flex-grow-1">
-                            {{ $product->deskripsi }}
-                        </p>
-
-                        <p class="fw-bold text-primary fs-5 mb-1">
-                            Rp {{ number_format($product->harga, 0, ',', '.') }}
-                        </p>
-
-                        <p class="mb-3">
-                            <span class="badge bg-primary px-3 py-2">
-                                Stok: {{ $product->stok }}
-                            </span>
-                        </p>
-
-                        <a href="{{ route('admin.products.edit', $product->id) }}"
-                           class="btn btn-primary w-100 fw-semibold mb-2">
-                            ✏️ Edit Produk
-                        </a>
-
-                        <form method="POST"
-                              action="{{ route('admin.products.restock', $product->id) }}">
-                            @csrf
-
-                            <div class="input-group">
-                                <input
-                                    type="number"
-                                    name="stok_tambah"
-                                    min="1"
-                                    class="form-control"
-                                    placeholder="Tambah stok"
-                                    required
-                                >
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary fw-bold fs-5 px-3"
-                                >
-                                    ➕
-                                </button>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <div class="text-center py-5 text-muted">
-                    <h5>Belum ada produk.</h5>
-                </div>
-            </div>
-        @endforelse
     </div>
+</main>
 
-</div>
 @endsection

@@ -1,56 +1,132 @@
-@extends('layouts.app')
-
-@section('title', 'Kelompok 8 - Kelola Produk')
+@extends('admin.contoh')
 
 @section('content')
-<h2>📦 Kelompok 8 - Kelola Produk</h2>
 
-<div class="menu">
-    <div>
-        <a href="/admin/orders">📦 Orders</a>
-        <a href="/admin/products">🛒 Produk & Stok</a>
+<main class="dashboard-content">
+
+    <div class="container-fluid px-3 px-lg-4 py-4">
+
+        <div class="page-heading mb-4">
+
+            <div>
+                <h1 class="h3 mb-1">
+                    Dashboard Admin
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Selamat datang di panel admin Kelompok 8 Store
+                </p>
+            </div>
+
+        </div>
+
+        <section class="row g-3">
+
+            {{-- TOTAL PRODUK --}}
+            <div class="col-md-6">
+
+                <div class="panel p-4 h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h5 class="text-muted">
+                                Total Produk
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                {{ \App\Models\Product::count() }}
+                            </h2>
+
+                        </div>
+
+                        <i class="bi bi-bag text-primary"
+                           style="font-size: 45px;"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- TOTAL PESANAN --}}
+            <div class="col-md-6">
+
+                <div class="panel p-4 h-100">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <h5 class="text-muted">
+                                Total Pesanan
+                            </h5>
+
+                            <h2 class="fw-bold">
+                                {{ \App\Models\Order::count() }}
+                            </h2>
+
+                        </div>
+
+                        <i class="bi bi-box-seam text-success"
+                           style="font-size: 45px;"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        {{-- MENU CEPAT --}}
+        <section class="row g-3 mt-2">
+
+            <div class="col-md-6">
+
+                <a href="/admin/products"
+                   class="text-decoration-none">
+
+                    <div class="panel p-4 text-center h-100">
+
+                        <i class="bi bi-bag-fill text-primary"
+                           style="font-size: 50px;"></i>
+
+                        <h4 class="mt-3">
+                            Kelola Produk
+                        </h4>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <a href="/admin/orders"
+                   class="text-decoration-none">
+
+                    <div class="panel p-4 text-center h-100">
+
+                        <i class="bi bi-box-fill text-success"
+                           style="font-size: 50px;"></i>
+
+                        <h4 class="mt-3">
+                            Kelola Pesanan
+                        </h4>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+
     </div>
 
-    <a href="/admin/products/create" class="btn btn-dark">
-        + Tambah Produk
-    </a>
-</div>
+</main>
 
-<table>
-    <tr>
-        <th>Nama Produk</th>
-        <th>Harga</th>
-        <th>Stok</th>
-        <th>Aksi</th>
-    </tr>
-
-    @foreach($products as $product)
-    <tr>
-        <td>{{ $product->nama_produk }}</td>
-        <td>Rp {{ number_format($product->harga, 0, ',', '.') }}</td>
-        <td>{{ $product->stok }}</td>
-        <td>
-            <a href="/admin/products/{{ $product->id }}/edit"
-               class="btn btn-orange"
-               style="margin-right: 5px;">
-                Edit
-            </a>
-
-            <form method="POST"
-                  action="/admin/products/{{ $product->id }}/restock"
-                  style="display:inline;">
-                @csrf
-                <input type="number"
-                       name="stok_tambah"
-                       placeholder="+"
-                       style="width: 70px; display:inline-block;">
-
-                <button type="submit" class="btn btn-green">
-                    Tambah
-                </button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
 @endsection

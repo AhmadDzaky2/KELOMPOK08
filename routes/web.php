@@ -25,7 +25,9 @@ Route::get('/', function () {
     $products = Product::all();
     return view('products', compact('products'));
 });
-
+Route::get('/contoh',function(){
+    return view('admin.dashboard');
+});
 
 /* =========================
 | AUTH

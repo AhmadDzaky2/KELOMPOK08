@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.contoh')
 
 @section('title', 'Admin Orders')
 
