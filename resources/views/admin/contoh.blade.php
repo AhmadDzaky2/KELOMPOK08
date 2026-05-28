@@ -29,13 +29,16 @@
     <aside class="admin-sidebar" id="adminSidebar">
 
         <div class="sidebar-header">
-            <a class="brand-mark text-decoration-none" href="/admin/orders">
+
+            <a class="brand-mark text-decoration-none"
+               href="/admin/dashboard">
 
                 <span class="brand-icon">
                     <i class="bi bi-grid-1x2-fill"></i>
                 </span>
 
                 <span class="brand-copy">
+
                     <span class="brand-title">
                         Kelompok 8 Store
                     </span>
@@ -43,15 +46,34 @@
                     <span class="brand-subtitle">
                         Admin Panel
                     </span>
+
                 </span>
 
             </a>
+
         </div>
 
         {{-- MENU --}}
         <nav class="sidebar-nav">
 
-            <a class="nav-link" href="/admin/orders">
+            {{-- DASHBOARD --}}
+            <a class="nav-link {{ request()->is('admin/dashboard') ? 'active' : '' }}"
+               href="/admin/dashboard">
+
+                <span class="nav-icon">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                </span>
+
+                <span class="nav-text">
+                    Dashboard
+                </span>
+
+            </a>
+
+            {{-- ORDERS --}}
+            <a class="nav-link {{ request()->is('admin/orders') ? 'active' : '' }}"
+               href="/admin/orders">
+
                 <span class="nav-icon">
                     <i class="bi bi-box-seam"></i>
                 </span>
@@ -59,9 +81,13 @@
                 <span class="nav-text">
                     Orders
                 </span>
+
             </a>
 
-            <a class="nav-link" href="/admin/products">
+            {{-- PRODUCTS --}}
+            <a class="nav-link {{ request()->is('admin/products') ? 'active' : '' }}"
+               href="/admin/products">
+
                 <span class="nav-icon">
                     <i class="bi bi-bag"></i>
                 </span>
@@ -69,9 +95,13 @@
                 <span class="nav-text">
                     Products
                 </span>
+
             </a>
 
-            <a class="nav-link" href="/admin/products/create">
+            {{-- TAMBAH PRODUK --}}
+            <a class="nav-link {{ request()->is('admin/products/create') ? 'active' : '' }}"
+               href="/admin/products/create">
+
                 <span class="nav-icon">
                     <i class="bi bi-plus-circle"></i>
                 </span>
@@ -79,6 +109,7 @@
                 <span class="nav-text">
                     Tambah Produk
                 </span>
+
             </a>
 
         </nav>
@@ -172,9 +203,11 @@
                         <ul class="dropdown-menu dropdown-menu-end">
 
                             <li>
+
                                 <a class="dropdown-item" href="/">
                                     Lihat Toko
                                 </a>
+
                             </li>
 
                             <li>
@@ -189,6 +222,7 @@
                                     <button class="dropdown-item">
                                         Logout
                                     </button>
+
                                 </form>
 
                             </li>

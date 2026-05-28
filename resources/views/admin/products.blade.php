@@ -12,17 +12,11 @@
                     Manajemen produk dan stok toko
                 </p>
             </div>
-
-            <a href="{{ route('admin.products.create') }}"
-               class="btn btn-primary">
-                ➕ Tambah Produk
-            </a>
         </div>
 
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show mb-4">
                 {{ session('success') }}
-
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"></button>
@@ -43,13 +37,14 @@
 
                 <table class="table align-middle mb-0">
 
-                    <thead>
+                    <thead style="background: #f1f5f9; color: #111827;">
                         <tr>
                             <th>Foto</th>
                             <th>Nama Produk</th>
+                            <th>Deskripsi</th>
                             <th>Harga</th>
                             <th>Stok</th>
-                            <th width="250">Aksi</th>
+                            <th width="300">Aksi</th>
                         </tr>
                     </thead>
 
@@ -80,6 +75,12 @@
                                 </strong>
                             </td>
 
+                            <td style="max-width: 200px;">
+                                <span class="text-muted">
+                                    {{ $product->deskripsi ?? '-' }}
+                                </span>
+                            </td>
+
                             <td>
                                 Rp {{ number_format($product->harga, 0, ',', '.') }}
                             </td>
@@ -92,13 +93,28 @@
 
                             <td>
 
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 flex-wrap">
 
                                     <a href="{{ route('admin.products.edit', $product->id) }}"
                                        class="btn btn-warning btn-sm">
                                         Edit
                                     </a>
 
+                                    {{-- DELETE --}}
+                                    <form method="POST"
+                                          action="{{ route('admin.products.delete', $product->id) }}"
+                                          onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
+
+                                        @csrf
+
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm">
+                                            Hapus
+                                        </button>
+
+                                    </form>
+
+                                    {{-- RESTOCK --}}
                                     <form method="POST"
                                           action="{{ route('admin.products.restock', $product->id) }}"
                                           class="d-flex gap-2">
@@ -131,7 +147,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="5" class="text-center text-muted py-4">
+                            <td colspan="6" class="text-center text-muted py-4">
                                 Belum ada produk
                             </td>
                         </tr>

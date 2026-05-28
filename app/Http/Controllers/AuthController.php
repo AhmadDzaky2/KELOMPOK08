@@ -15,21 +15,36 @@ class AuthController extends Controller
     }
 
     // proses register
-    public function register(Request $request)
-    {
-        $data = $request->validate([
-            'username' => 'required|unique:users',
-            'password' => 'required|min:4|confirmed',
-        ]);
+public function register(Request $request)
+{
+    $data = $request->validate([
 
-        User::create([
-            'username' => $data['username'],
-            'password' => bcrypt($data['password']),
-            'role' => 'customer',
-        ]);
+        'username' => 'required|unique:users',
 
-        return redirect('/login');
-    }
+        'nomor_telepon' => 'required',
+
+        'alamat' => 'required',
+
+        'password' => 'required|min:4|confirmed',
+
+    ]);
+
+    User::create([
+
+        'username' => $data['username'],
+
+        'nomor_telepon' => $data['nomor_telepon'],
+
+        'alamat' => $data['alamat'],
+
+        'password' => bcrypt($data['password']),
+
+        'role' => 'customer',
+
+    ]);
+
+    return redirect('/login');
+}
 
     // tampil login
     public function showLogin()

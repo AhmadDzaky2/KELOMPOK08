@@ -25,15 +25,33 @@ class CheckoutController extends Controller
             return back()->with('error', 'Keranjang kosong');
         }
 
-        // Validasi sesuai name di cart.blade.php
-        $request->validate([
-            'alamat_pengiriman' => 'required',
-            'nomor_telepon' => 'required',
-            'metode_pembayaran' => 'required',
-        ]);
+        // Ambil user login
+        $user = Auth::user();
+
+        // Kalau alamat/no hp user masih kosong → wajib isi
+        if (empty($user->alamat) || empty($user->nomor_telepon)) {
+
+            $request->validate([
+                'alamat_pengiriman' => 'required',
+                'nomor_telepon' => 'required',
+                'metode_pembayaran' => 'required',
+            ]);
+
+            // Simpan ke database users
+            $user->update([
+                'alamat' => $request->alamat_pengiriman,
+                'nomor_telepon' => $request->nomor_telepon,
+            ]);
+        } else {
+
+            $request->validate([
+                'metode_pembayaran' => 'required',
+            ]);
+        }
 
         // Hitung total
         $total = 0;
+
         foreach ($cart as $item) {
             $total += $item['price'] * $item['quantity'];
         }
@@ -42,13 +60,16 @@ class CheckoutController extends Controller
         $order = Order::create([
             'user_id' => Auth::id(),
             'total_harga' => $total,
-            'alamat_pengiriman' => $request->alamat_pengiriman,
-            'nomor_telepon' => $request->nomor_telepon,
+
+            // otomatis ambil dari users
+            'alamat_pengiriman' => $user->alamat,
+            'nomor_telepon' => $user->nomor_telepon,
+
             'metode_pembayaran' => $request->metode_pembayaran,
             'status_order' => 'pending',
         ]);
 
-        // Kurangi stok produk
+        // Simpan item order + kurangi stok
         foreach ($cart as $product_id => $item) {
 
             $product = Product::find($product_id);
@@ -59,26 +80,22 @@ class CheckoutController extends Controller
 
             $qty = $item['quantity'];
 
-            // Simpan detail pesanan (jika tabel order_items sudah benar)
-            // Jika masih error, bagian ini bisa dihapus sementara
-            if (class_exists(OrderItem::class)) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $product_id,
-                    'jumlah' => $qty,
-                    'harga_saat_beli' => $item['price'],
-                ]);
-            }
+            // Simpan detail pesanan
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product_id,
+                'jumlah' => $qty,
+                'harga_saat_beli' => $item['price'],
+            ]);
 
             // Kurangi stok
             $product->stok -= $qty;
             $product->save();
         }
 
-        // Kosongkan cart
+        // Hapus cart
         session()->forget('cart');
 
-        // Redirect ke home + pesan sukses
         return redirect('/')->with('success', '✅ Pesanan berhasil dibuat!');
     }
 }

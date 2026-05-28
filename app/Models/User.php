@@ -12,11 +12,11 @@ class User extends Authenticatable
 
     // Tambahkan username dan role agar bisa disimpan ke database
     protected $fillable = [
-        'name',
         'username',
-        'email',
         'password',
         'role',
+        'alamat',
+        'nomor_telepon',
     ];
 
     protected $hidden = [
@@ -28,7 +28,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 }
